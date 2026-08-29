@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sitenoted note</title>
+  <link rel="stylesheet" href="note.css">
+</head>
+<body>
+  <div class="note" id="note" role="group" aria-label="Sticky note">
+    <div class="bar" id="bar">
+      <div class="bar-main" id="barMain">
+        <button type="button" class="chip" id="scope"></button>
+        <span class="peek" id="peek"></span>
+        <span class="grow"></span>
+        <button type="button" class="icon" id="color" aria-label="Change colour" aria-expanded="false">
+          <span class="dot" aria-hidden="true"></span>
+        </button>
+        <button type="button" class="icon" id="fold" aria-label="Collapse note">–</button>
+        <button type="button" class="icon danger" id="del" aria-label="Delete note">×</button>
+      </div>
+      <div class="bar-confirm" id="barConfirm" hidden>
+        <span class="ask">Delete note?</span>
+        <span class="grow"></span>
+        <button type="button" class="text-btn" id="cancel">Cancel</button>
+        <button type="button" class="text-btn warn" id="confirm">Delete</button>
+      </div>
+    </div>
+
+    <div class="swatches" id="swatches" hidden role="group" aria-label="Note colour"></div>
+
+    <textarea id="text" aria-label="Note text" placeholder="Type a note…" spellcheck="false"></textarea>
+
+    <div class="grip" id="grip" title="Resize" aria-hidden="true"></div>
+  </div>
+
+  <script src="palette.js"></script>
+  <script src="note.js"></script>
+</body>
+</html>

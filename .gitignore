@@ -1,0 +1,10 @@
+# Build output for Chrome Web Store uploads
+*.zip
+
+# Local test harnesses (generated, never shipped)
+_h_*.html
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store

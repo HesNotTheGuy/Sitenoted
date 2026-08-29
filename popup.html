@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sitenoted</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <span class="mark" aria-hidden="true"></span>
+    <h1 id="host">…</h1>
+    <button id="hide" class="ghost" title="Show or hide the notes on this page (Alt+Shift+H)">Hide</button>
+  </header>
+
+  <div class="actions">
+    <button id="addSite" class="primary">New note for this site</button>
+    <button id="addPage" title="Only appears on this exact URL">This page</button>
+  </div>
+
+  <p id="warn" class="warn hidden" role="status"></p>
+
+  <div class="search">
+    <input id="q" type="search" placeholder="Search notes…" autocomplete="off" aria-label="Search notes">
+  </div>
+
+  <div id="list" class="list" role="list"></div>
+
+  <footer>
+    <button id="options" class="ghost">Settings</button>
+    <button id="export" class="ghost">Export</button>
+    <button id="import" class="ghost">Import</button>
+    <input id="file" type="file" accept="application/json" hidden>
+    <span class="grow"></span>
+    <span id="count" class="muted"></span>
+  </footer>
+
+  <script src="palette.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

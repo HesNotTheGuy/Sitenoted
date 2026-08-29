@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sitenoted settings</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <header class="page-head">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <h1>Sitenoted</h1>
+        <p class="muted">Sticky notes that stay on the sites you leave them on.</p>
+      </div>
+    </header>
+
+    <section id="welcome" class="card welcome hidden">
+      <h2>You're set up</h2>
+      <ol>
+        <li>Open any website and click the Sitenoted button — or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>.</li>
+        <li>Type. It saves itself.</li>
+        <li>The note is waiting the next time you land on that site.</li>
+      </ol>
+      <p class="muted">Pin the extension to your toolbar so the button is always one click away.</p>
+    </section>
+
+    <section class="card">
+      <h2>New notes</h2>
+
+      <div class="field">
+        <span class="label" id="colorLabel">Colour</span>
+        <div class="swatch-row" id="colors" role="group" aria-labelledby="colorLabel"></div>
+      </div>
+
+      <div class="field">
+        <span class="label" id="scopeLabel">Where a new note appears</span>
+        <div class="seg" id="scope" role="group" aria-labelledby="scopeLabel">
+          <button type="button" data-value="site">Whole site</button>
+          <button type="button" data-value="page">Just that page</button>
+        </div>
+        <p class="hint">A whole-site note follows you across every page of that domain. A page note stays on the one URL.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Appearance</h2>
+
+      <div class="field">
+        <span class="label" id="sizeLabel">Text size</span>
+        <div class="seg" id="size" role="group" aria-labelledby="sizeLabel">
+          <button type="button" data-value="s">Small</button>
+          <button type="button" data-value="m">Medium</button>
+          <button type="button" data-value="l">Large</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="check">
+          <input type="checkbox" id="fade">
+          <span>Fade notes while you're not using them</span>
+        </label>
+        <p class="hint">Notes go slightly transparent until you hover or click them, so they don't cover the page.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Shortcuts</h2>
+      <dl class="keys">
+        <dt><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd></dt><dd>New note on this site</dd>
+        <dt><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></dt><dd>Hide or show notes on this page</dd>
+        <dt><kbd>Esc</kbd></dt><dd>Stop editing a note</dd>
+        <dt>Double-click</dt><dd>Collapse or expand a note, from its title bar</dd>
+      </dl>
+      <button id="shortcuts">Change shortcuts</button>
+    </section>
+
+    <section class="card">
+      <h2>Your notes</h2>
+      <p class="muted" id="stats">…</p>
+      <div class="row wrap">
+        <button id="export">Export backup</button>
+        <button id="import">Import backup</button>
+        <input id="file" type="file" accept="application/json" hidden>
+        <span class="grow"></span>
+        <button id="wipe" class="danger">Delete everything</button>
+      </div>
+      <p id="say" class="hint" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Privacy</h2>
+      <p>
+        Notes are stored only in this browser, using Chrome's extension storage. Sitenoted has
+        no server, makes no network requests, and contains no analytics or tracking of any kind.
+      </p>
+      <p>
+        Each note is rendered inside a frame owned by the extension rather than by the website,
+        so the pages you visit can't read your notes or the keystrokes that go into them.
+      </p>
+    </section>
+
+    <footer class="page-foot muted">Sitenoted <span id="version"></span></footer>
+  </main>
+
+  <script src="palette.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
