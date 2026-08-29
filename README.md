@@ -99,6 +99,12 @@ palette.js       note colours and text sizes shared by all extension pages
 icons/           generated PNG icons
 ```
 
+## License
+
+Proprietary, all rights reserved — see [LICENSE](LICENSE). Not open source. This
+keeps every option open: the copyright holder can relicense at any time, whereas
+an open-source grant, once published, cannot be withdrawn for that version.
+
 ## Firefox
 
 Two changes are needed: add `browser_specific_settings.gecko.id`, and swap the
