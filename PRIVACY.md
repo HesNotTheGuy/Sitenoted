@@ -15,7 +15,7 @@ removed automatically.
 
 In your own browser, through the `chrome.storage.local` API. Nothing is uploaded.
 Sitenoted has no server, no account system, and makes no network requests
-whatsoever — it cannot, as it bundles no remote code and contacts no endpoint.
+at all. It bundles no remote code and contacts no endpoint.
 Notes made in an Incognito window are kept separate from your normal profile.
 
 ## What it can see

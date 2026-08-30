@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Sitenoted",
   "version": "1.0.0",
-  "description": "Sticky notes for any website. Your notes reappear when you come back — private, local, never sent anywhere.",
+  "description": "Sticky notes for any website. Your notes reappear when you come back. Private, local, never sent anywhere.",
   "minimum_chrome_version": "102",
   "permissions": ["storage", "contextMenus", "activeTab", "scripting"],
   "background": {
@@ -24,7 +24,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Sitenoted — notes for this site",
+    "default_title": "Sitenoted: notes for this site",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png",

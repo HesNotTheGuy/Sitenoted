@@ -207,7 +207,7 @@ function cardBar(n, trashed) {
     }),
     mini("Delete note", "×", async () => {
       await apply({ k: "trash", id: n.id });
-      say("Moved to Recently deleted — restore it from the left.");
+      say("Moved to Recently deleted. Restore it from the left.");
     }, true)
   );
   return bar;

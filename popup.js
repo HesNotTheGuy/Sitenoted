@@ -23,7 +23,7 @@ async function init() {
   } else {
     $("host").textContent = "This page";
     for (const id of ["addSite", "addPage", "hide"]) $(id).disabled = true;
-    warn("Notes can't run on browser pages like this one — open a website and try again.");
+    warn("Notes can't run on browser pages like this one. Open a website and try again.");
   }
 
   if (ctx) {
@@ -182,9 +182,9 @@ function item(n, kind) {
   open.type = "button";
   open.className = "open";
   open.title =
-    kind === "here" ? (n.ghost ? "Wake this note — it is click-through right now" : "Jump to this note")
+    kind === "here" ? (n.ghost ? "Wake this note, it is click-through right now" : "Jump to this note")
       : kind === "away" ? "Open " + n.host
-        : "Deleted " + when(n.deletedAt) + " — use Restore to bring it back";
+        : "Deleted " + when(n.deletedAt) + ", use Restore to bring it back";
 
   const chip = document.createElement("span");
   chip.className = "chip";

@@ -67,12 +67,12 @@ function render() {
   el.fold.setAttribute("aria-label", note.collapsed ? "Expand note" : "Collapse note");
   el.scope.textContent = note.scope === "page" ? "page" : "site";
   el.scope.title = note.scope === "page"
-    ? "On this page only — click to show it on every page of " + note.host
-    : "On every page of " + note.host + " — click to pin it to this page only";
+    ? "On this page only. Click to show it on every page of " + note.host
+    : "On every page of " + note.host + ", click to pin it to this page only";
   el.peek.textContent = note.collapsed ? (firstLine(note.text, 48) || "Empty note") : "";
   el.ghost.setAttribute("aria-pressed", String(!!note.ghost));
   el.ghost.title = note.ghost
-    ? "Click-through is on — wake this note from the toolbar popup"
+    ? "Click-through is on. Wake this note from the toolbar popup"
     : "Let clicks pass through to the page (wake it again from the popup)";
   if (document.activeElement !== el.text && el.text.value !== note.text) {
     el.text.value = note.text;

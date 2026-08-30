@@ -1,7 +1,7 @@
 # Sitenoted
 
 Sticky notes for any website. Leave a note on a page, and it's waiting there the
-next time you visit — no account, no server, nothing leaves your browser.
+next time you visit, no account, no server, nothing leaves your browser.
 
 ## Install (Chrome, Edge, Brave, Opera)
 
@@ -22,7 +22,7 @@ next time you visit — no account, no server, nothing leaves your browser.
 | Collapse | The `–` button, or double-click the title bar |
 | Switch site ⇄ page | The `SITE` / `PAGE` chip in the title bar |
 | Hide notes on this page | Toolbar → **Hide**, or <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> |
-| Let clicks pass through | The `◐` button — the note goes faint and stops catching the pointer |
+| Let clicks pass through | The `◐` button, the note goes faint and stops catching the pointer |
 | Wake a click-through note | Toolbar popup → click it in the list |
 | Find an old note | Toolbar → search box (searches every note) |
 | Manage everything | Toolbar → **All notes** |
@@ -47,7 +47,7 @@ previews all keep working on exactly what you typed.
 ~~struck~~          - [x] done          [label](https://example.com)
 ```
 
-Checkboxes are clickable in the rendered view — ticking one edits the line
+Checkboxes are clickable in the rendered view, ticking one edits the line
 behind it without opening the editor. While editing: **Enter** continues a list
 and ends it on an empty item, **Tab**/**Shift+Tab** indent inside a list (and
 move focus everywhere else), **Ctrl/Cmd+B** and **Ctrl/Cmd+I** wrap the
@@ -60,7 +60,7 @@ stays inert text, shown exactly as written.
 
 The `◐` button drops a note to 40% opacity and sets `pointer-events: none`, so
 clicks land on the page underneath as though the note were not there. That also
-means the note cannot be clicked to bring it back, which is deliberate — the
+means the note cannot be clicked to bring it back, which is deliberate, the
 toolbar popup lists it with a **ghost** tag, and clicking it there wakes it.
 
 ## The All notes page
@@ -87,7 +87,7 @@ origin *and* a different process from the page underneath. Specifically:
   frame never reaches the page's event path at all.
 - **The content script never handles note text.** It receives only geometry
   (`x, y, w, h, collapsed`) from the service worker. Note bodies travel between
-  the service worker, note frames and the popup — all extension contexts.
+  the service worker, note frames and the popup, all extension contexts.
 - **Messages are authenticated.** Frame → page messages are checked against
   `event.source`, which the browser sets and a page cannot forge. Page → frame
   messages carry a nonce that only the content script's isolated world holds.
@@ -98,7 +98,7 @@ origin *and* a different process from the page underneath. Specifically:
 
 Known and accepted limits: a site can tell Sitenoted is installed (the frame's
 `chrome-extension://` URL is in the DOM), can see where notes sit on screen, and
-can cover them with its own elements — none of which exposes content. Storage is
+can cover them with its own elements, none of which exposes content. Storage is
 `chrome.storage.local`, which is unencrypted on disk like all extension storage;
 anyone with your unlocked OS profile can read it.
 
@@ -143,7 +143,7 @@ icons/           generated PNG icons
 
 ## License
 
-Proprietary, all rights reserved — see [LICENSE](LICENSE). Not open source. This
+Proprietary, all rights reserved, see [LICENSE](LICENSE). Not open source. This
 keeps every option open: the copyright holder can relicense at any time, whereas
 an open-source grant, once published, cannot be withdrawn for that version.
 
