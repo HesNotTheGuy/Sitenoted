@@ -196,6 +196,7 @@ main {
 .card-body ul.md-tasks { list-style: none; padding-left: .1em; }
 .card-body li.md-task { list-style: none; }
 .card-body .md-task { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 6px; }
+.card-body .md-task > ul, .card-body .md-task > ol { flex: 0 0 100%; padding-left: 1.7em; }
 .card-body .md-task > input { margin: .28em 0 0; accent-color: currentColor; }
 .card-body .md-task.done .md-task-text { text-decoration: line-through; opacity: .55; }
 .card-body .md-gap { height: .5em; }

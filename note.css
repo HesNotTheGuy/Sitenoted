@@ -251,7 +251,7 @@ body.confirming .bar-main { display: none; }
 li.md-task { list-style: none; }
 .md-task { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 7px; }
 /* A sub-list under a task belongs on its own line, not beside the checkbox. */
-.md-task > ul, .md-task > ol { flex: 0 0 100%; padding-left: 1.1em; }
+.md-task > ul, .md-task > ol { flex: 0 0 100%; padding-left: 1.7em; }
 .md-task > input {
   flex: 0 0 auto;
   width: 13px;
