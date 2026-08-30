@@ -22,13 +22,53 @@ next time you visit — no account, no server, nothing leaves your browser.
 | Collapse | The `–` button, or double-click the title bar |
 | Switch site ⇄ page | The `SITE` / `PAGE` chip in the title bar |
 | Hide notes on this page | Toolbar → **Hide**, or <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> |
+| Let clicks pass through | The `◐` button — the note goes faint and stops catching the pointer |
+| Wake a click-through note | Toolbar popup → click it in the list |
 | Find an old note | Toolbar → search box (searches every note) |
-| Undo a delete | The **Undo** toast, or *Recently deleted* in the popup (kept 7 days) |
+| Manage everything | Toolbar → **All notes** |
+| Undo a delete | The **Undo** toast, or *Recently deleted* (kept 7 days) |
 | Defaults, backup, wipe | Toolbar → **Settings** |
 
 Notes save themselves as you type. A *site* note appears on every page of a
 hostname; a *page* note only on that path (query strings and `#hashes` are
-ignored, so `?page=2` is still the same page).
+ignored, so `?page=2` is still the same page). Switching a note to page scope
+pins it to the page you are looking at.
+
+## Writing in a note
+
+Notes are plain text with markdown, rendered when you step away and shown as
+source when you click back in. Storage stays plain text, so search, export and
+previews all keep working on exactly what you typed.
+
+```
+# Heading           - bullet            > quote
+## Smaller          1. numbered         ---
+**bold** *italic*   - [ ] to do         `code`
+~~struck~~          - [x] done          [label](https://example.com)
+```
+
+Checkboxes are clickable in the rendered view — ticking one edits the line
+behind it without opening the editor. While editing: **Enter** continues a list
+and ends it on an empty item, **Tab**/**Shift+Tab** indent inside a list (and
+move focus everywhere else), **Ctrl/Cmd+B** and **Ctrl/Cmd+I** wrap the
+selection, **Esc** stops editing.
+
+Links only become clickable for `http`, `https` and `mailto`. Anything else
+stays inert text, shown exactly as written.
+
+## Click-through notes
+
+The `◐` button drops a note to 40% opacity and sets `pointer-events: none`, so
+clicks land on the page underneath as though the note were not there. That also
+means the note cannot be clicked to bring it back, which is deliberate — the
+toolbar popup lists it with a **ghost** tag, and clicking it there wakes it.
+
+## The All notes page
+
+Toolbar → **All notes** opens a full page listing every note grouped by site,
+without visiting any of them. Search across all notes, edit text in place, change
+colour or scope, delete or restore, delete a whole site's worth at once, and
+export or import backups.
 
 ## Security model
 
@@ -92,10 +132,12 @@ manifest.json    permissions, shortcuts, entry points
 background.js    service worker: sole writer to storage, badge, menus, commands
 content.js       page-side shell: positions note frames, relays drag, repairs tampering
 note.html/css/js one note, inside an extension-origin iframe
-popup.*          toolbar panel: add, search, restore, back up
+markdown.js      markdown renderer (DOM nodes, never innerHTML) and editor keys
+popup.*          toolbar panel: add, search, wake, restore
+manager.*        the All notes page: every note, editable, grouped by site
 options.*        settings and first-run welcome
-ui.css           tokens shared by popup + options
-palette.js       note colours and text sizes shared by all extension pages
+ui.css           tokens shared by the extension pages
+palette.js       note colours, text sizes, preview helpers
 icons/           generated PNG icons
 ```
 

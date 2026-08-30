@@ -23,6 +23,9 @@ async function init() {
     chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
   });
 
+  $("manage").addEventListener("click", () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL("manager.html") });
+  });
   $("export").addEventListener("click", exportNotes);
   $("import").addEventListener("click", () => $("file").click());
   $("file").addEventListener("change", importNotes);

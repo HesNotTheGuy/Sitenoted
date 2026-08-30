@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>All notes — Sitenoted</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="manager.css">
+</head>
+<body>
+  <header class="top">
+    <span class="mark" aria-hidden="true"></span>
+    <h1>All notes</h1>
+    <input id="q" type="search" placeholder="Search every note…" autocomplete="off" aria-label="Search every note">
+    <span class="grow"></span>
+    <button id="export" class="ghost">Export</button>
+    <button id="import" class="ghost">Import</button>
+    <input id="file" type="file" accept="application/json" hidden>
+    <button id="options" class="ghost">Settings</button>
+  </header>
+
+  <main>
+    <nav id="sites" class="sites" aria-label="Sites"></nav>
+
+    <section class="notes">
+      <div class="notes-head">
+        <h2 id="heading">Everything</h2>
+        <span class="grow"></span>
+        <span id="summary" class="muted"></span>
+        <button id="wipeSite" class="danger hidden">Delete all for this site</button>
+      </div>
+      <div id="list" class="cards"></div>
+      <p id="say" class="say muted" role="status"></p>
+    </section>
+  </main>
+
+  <script src="palette.js"></script>
+  <script src="markdown.js"></script>
+  <script src="manager.js"></script>
+</body>
+</html>

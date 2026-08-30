@@ -11,9 +11,23 @@ const PALETTE = {
 const COLOR_NAMES = Object.keys(PALETTE);
 const TEXT_SIZES = { s: "12px", m: "13.5px", l: "15.5px" };
 
+/* Markdown markers read as noise in a one-line preview, so drop them. */
+function stripMarks(text) {
+  return String(text || "")
+    .replace(/^\s*#{1,3}\s+/, "")
+    .replace(/^\s*>\s?/, "")
+    .replace(/^\s*[-*+]\s+\[[ xX]\]\s*/, "")
+    .replace(/^\s*[-*+]\s+/, "")
+    .replace(/^\s*\d{1,9}[.)]\s+/, "")
+    .replace(/\[([^\]\n]*)\]\(([^)\s]+)\)/g, "$1")
+    .replace(/(\*\*|__|~~|`)/g, "")
+    .trim();
+}
+
 /* First non-blank line of a note, for previews. */
 function firstLine(text, max) {
-  const line = (text || "").split("\n").find((s) => s.trim()) || "";
+  const raw = (text || "").split("\n").find((s) => s.trim()) || "";
+  const line = stripMarks(raw);
   if (!line) return "";
   return line.length > (max || 60) ? line.slice(0, max || 60) + "…" : line;
 }

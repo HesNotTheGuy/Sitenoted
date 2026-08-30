@@ -18,7 +18,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["note.html", "note.css", "note.js", "palette.js"],
+      "resources": ["note.html", "note.css", "note.js", "markdown.js", "palette.js"],
       "matches": ["<all_urls>"]
     }
   ],

@@ -15,17 +15,20 @@ const el = {
   peek: document.getElementById("peek"),
   color: document.getElementById("color"),
   swatches: document.getElementById("swatches"),
+  ghost: document.getElementById("ghost"),
   fold: document.getElementById("fold"),
   del: document.getElementById("del"),
   cancel: document.getElementById("cancel"),
   confirm: document.getElementById("confirm"),
   text: document.getElementById("text"),
+  rendered: document.getElementById("rendered"),
   grip: document.getElementById("grip")
 };
 
 let note = null;
 let parentToken = null;
 let here = null;          // the host/page this frame is currently displayed on
+let editing = true;       // read view shows rendered markdown, edit view the source
 let saveTimer = 0;
 let pending = {};         // fields waiting to be written, so a fast second edit
                           // never cancels the first one's save
@@ -67,9 +70,45 @@ function render() {
     ? "On this page only — click to show it on every page of " + note.host
     : "On every page of " + note.host + " — click to pin it to this page only";
   el.peek.textContent = note.collapsed ? (firstLine(note.text, 48) || "Empty note") : "";
+  el.ghost.setAttribute("aria-pressed", String(!!note.ghost));
+  el.ghost.title = note.ghost
+    ? "Click-through is on — wake this note from the toolbar popup"
+    : "Let clicks pass through to the page (wake it again from the popup)";
   if (document.activeElement !== el.text && el.text.value !== note.text) {
     el.text.value = note.text;
   }
+  paintBody();
+}
+
+/* An empty note has nothing to render, so it always opens ready to type. */
+function paintBody() {
+  const showSource = editing || !note.text.trim();
+  el.text.hidden = !showSource;
+  el.rendered.hidden = showSource;
+  if (!showSource) {
+    el.rendered.textContent = "";
+    el.rendered.append(renderMarkdown(note.text));
+  }
+}
+
+function setEditing(on, caretAt) {
+  editing = !!on;
+  paintBody();
+  if (!editing) return;
+  el.text.focus();
+  if (typeof caretAt === "number") el.text.setSelectionRange(caretAt, caretAt);
+}
+
+/* Where in the source does the block you clicked start? */
+function caretForClick(target) {
+  const block = target.closest?.("[data-line]");
+  if (!block) return el.text.value.length;
+  const index = Number(block.dataset.line);
+  const lines = note.text.split("\n");
+  if (!isFinite(index) || index < 0 || index >= lines.length) return el.text.value.length;
+  let offset = 0;
+  for (let i = 0; i < index; i++) offset += lines[i].length + 1;
+  return offset + lines[index].length;
 }
 
 function buildSwatches() {
@@ -86,7 +125,7 @@ function buildSwatches() {
       note.color = name;
       render();
       toggleSwatches(false);
-      el.text.focus();
+      if (editing) el.text.focus();
     });
     el.swatches.append(b);
   }
@@ -139,6 +178,7 @@ async function load() {
   const settings = data.settings || {};
   document.documentElement.style.setProperty("--tsize", TEXT_SIZES[settings.textSize] || TEXT_SIZES.m);
   if (!note) { tell({ t: "closed" }); return; }
+  editing = !note.text.trim();
   render();
   tell({ t: "ready" });
   tell({ t: "collapsed", value: !!note.collapsed });
@@ -163,9 +203,28 @@ chrome.storage.onChanged.addListener((changes, area) => {
 /* ------------------------------------------------------------ interactions */
 
 el.text.addEventListener("input", () => patch({ text: el.text.value }));
-el.text.addEventListener("blur", flush);
+el.text.addEventListener("blur", () => {
+  flush();
+  setEditing(false);          // stepping away renders what you wrote
+});
+
 el.text.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") { e.preventDefault(); flush(); el.text.blur(); }
+  if (e.key === "Escape") { e.preventDefault(); flush(); el.text.blur(); return; }
+
+  if (e.key === "Enter" && !e.shiftKey && continueList(el.text)) {
+    e.preventDefault();
+    return;
+  }
+  /* Tab only belongs to the note while you are inside a list; everywhere else
+     it has to keep moving focus for keyboard users. */
+  if (e.key === "Tab" && indentList(el.text, e.shiftKey)) {
+    e.preventDefault();
+    return;
+  }
+  if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+    const token = e.key === "b" ? "**" : e.key === "i" ? "*" : null;
+    if (token && wrapSelection(el.text, token)) e.preventDefault();
+  }
 });
 
 el.note.addEventListener("mousedown", (e) => {
@@ -173,9 +232,33 @@ el.note.addEventListener("mousedown", (e) => {
   if (!el.swatches.hidden && !e.target.closest(".swatches, #color")) toggleSwatches(false);
 });
 
-/* Clicking the paper anywhere starts typing. */
+/* Ticking a box in the read view edits the source line behind it, without
+   dropping you into the editor. */
+el.rendered.addEventListener("change", (e) => {
+  const box = e.target;
+  if (!box.matches?.('input[type="checkbox"]')) return;
+  const next = toggleTask(note.text, Number(box.dataset.line));
+  el.text.value = next;
+  patch({ text: next }, true);
+  render();
+});
+
+/* Clicking the paper starts typing, with the caret on the line you clicked.
+   Links and checkboxes keep their own behaviour. */
+el.rendered.addEventListener("click", (e) => {
+  if (e.target.closest('a, input[type="checkbox"]')) return;
+  setEditing(true, caretForClick(e.target));
+});
+
+el.rendered.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && e.target === el.rendered) {
+    e.preventDefault();
+    setEditing(true);
+  }
+});
+
 el.note.addEventListener("click", (e) => {
-  if (note && !note.collapsed && (e.target === el.note || e.target === el.text)) el.text.focus();
+  if (note && !note.collapsed && e.target === el.note) setEditing(true);
 });
 
 addEventListener("focus", () => tell({ t: "focus" }), true);
@@ -195,13 +278,23 @@ el.scope.addEventListener("click", () => {
 
 el.color.addEventListener("click", () => toggleSwatches());
 
+/* Ghosting hands the pointer back to the page, so this note can no longer be
+   clicked at all. The popup is the way back, which the title says out loud. */
+el.ghost.addEventListener("click", () => {
+  const on = !note.ghost;
+  flush();
+  patch({ ghost: on }, true);
+  if (on) setEditing(false);
+  render();
+  tell({ t: "ghost", value: on });
+});
+
 el.fold.addEventListener("click", () => {
   const collapsed = !note.collapsed;
   toggleSwatches(false);
   patch({ collapsed }, true);
   render();
   tell({ t: "collapsed", value: collapsed });
-  if (!collapsed) el.text.focus();
 });
 
 el.del.addEventListener("click", () => {
@@ -221,7 +314,7 @@ addEventListener("keydown", (e) => {
 function closeConfirm() {
   el.body.classList.remove("confirming");
   el.confirmBar.hidden = true;
-  el.text.focus();
+  (editing ? el.text : el.rendered).focus();
 }
 
 async function remove(quiet) {
@@ -273,10 +366,13 @@ addEventListener("message", (e) => {
   }
   if (!parentToken || d.token !== parentToken) return;
   if (d.t === "where") { here = { host: d.host, page: d.page }; return; }
+  if (d.t === "unghost") {
+    if (note) { note.ghost = false; render(); }
+    return;
+  }
   if (d.t === "focus") {
     if (note?.collapsed) el.fold.click();
-    el.text.focus();
-    el.text.setSelectionRange(el.text.value.length, el.text.value.length);
+    setEditing(true, el.text.value.length);
   }
 });
 

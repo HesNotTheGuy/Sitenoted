@@ -15,6 +15,8 @@
         <button type="button" class="icon" id="color" aria-label="Change colour" aria-expanded="false">
           <span class="dot" aria-hidden="true"></span>
         </button>
+        <button type="button" class="icon" id="ghost" aria-label="Make note click-through"
+                aria-pressed="false">◐</button>
         <button type="button" class="icon" id="fold" aria-label="Collapse note">–</button>
         <button type="button" class="icon danger" id="del" aria-label="Delete note">×</button>
       </div>
@@ -28,12 +30,17 @@
 
     <div class="swatches" id="swatches" hidden role="group" aria-label="Note colour"></div>
 
-    <textarea id="text" aria-label="Note text" placeholder="Type a note…" spellcheck="false"></textarea>
+    <div class="rendered" id="rendered" tabindex="0" role="button"
+         aria-label="Note content — click to edit" hidden></div>
+
+    <textarea id="text" aria-label="Note text"
+              placeholder="Type a note…&#10;&#10;- bullet&#10;- [ ] task&#10;# heading"></textarea>
 
     <div class="grip" id="grip" title="Resize" aria-hidden="true"></div>
   </div>
 
   <script src="palette.js"></script>
+  <script src="markdown.js"></script>
   <script src="note.js"></script>
 </body>
 </html>

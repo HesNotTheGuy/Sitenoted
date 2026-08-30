@@ -104,12 +104,15 @@
       margin: "0", padding: "0", border: "0",
       "border-radius": "10px", overflow: "hidden",
       "box-shadow": "0 8px 24px rgba(15, 18, 25, .22), 0 1px 3px rgba(15, 18, 25, .18)",
-      "pointer-events": hidden ? "none" : "auto",
+      /* Ghosted notes stay visible but stop catching the pointer, so the page
+         underneath behaves as though they are not there. */
+      "pointer-events": hidden || card.geo.ghost ? "none" : "auto",
       display: hidden ? "none" : "block",
       visibility: "visible",
       transform: "none", filter: "none",
       "z-index": String(1 + (card.order || 0)),
-      opacity: card.lit || card.focused || !settings.fade ? "1" : "0.62",
+      opacity: card.geo.ghost ? "0.4"
+        : card.lit || card.focused || !settings.fade ? "1" : "0.62",
       transition: "opacity .14s ease"
     });
     style(card.frame, {
@@ -262,6 +265,11 @@
         paint(card);
         break;
 
+      case "ghost":
+        card.geo.ghost = !!d.value;
+        paint(card);
+        break;
+
       case "closed":
         unmount(id);
         if (d.trashed) toast(id);
@@ -286,6 +294,12 @@
         const card = cards.get(msg.id);
         if (card) {
           if (hidden) setHidden(false);
+          if (card.geo.ghost) {
+            card.geo.ghost = false;      // a ghost you cannot click needs a way back
+            ask({ k: "patch", id: msg.id, fields: { ghost: false } });
+            toFrame(card, { t: "unghost" });
+            paint(card);
+          }
           raise(card);
           toFrame(card, { t: "focus" });
           pulse(card);

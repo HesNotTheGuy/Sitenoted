@@ -40,7 +40,8 @@ const matches = (n, ctx) =>
 
 /* What the content script is allowed to know: where a note sits, never its text. */
 const geometryOf = (n) => ({
-  id: n.id, x: n.x, y: n.y, w: n.w, h: n.h, collapsed: !!n.collapsed, z: n.z || 0
+  id: n.id, x: n.x, y: n.y, w: n.w, h: n.h,
+  collapsed: !!n.collapsed, ghost: !!n.ghost, z: n.z || 0
 });
 
 async function settings() {
@@ -72,6 +73,7 @@ async function createNote(ctx, opts) {
     x: num(opts.x, 24), y: num(opts.y, 24),
     w: num(opts.w, 260), h: num(opts.h, 200),
     collapsed: false,
+    ghost: false,
     z: now,
     createdAt: now,
     updatedAt: now
@@ -81,7 +83,7 @@ async function createNote(ctx, opts) {
 }
 
 /* Only these fields may ever be written by a client. */
-const WRITABLE = new Set(["text", "color", "collapsed", "scope", "page", "host", "x", "y", "w", "h", "z"]);
+const WRITABLE = new Set(["text", "color", "collapsed", "ghost", "scope", "page", "host", "x", "y", "w", "h", "z"]);
 
 async function patchNote(id, fields) {
   const key = NOTE + id;
@@ -94,6 +96,7 @@ async function patchNote(id, fields) {
     else if (k === "color") { if (isColor(v)) next.color = v; }
     else if (k === "scope") { if (v === "site" || v === "page") next.scope = v; }
     else if (k === "collapsed") next.collapsed = !!v;
+    else if (k === "ghost") next.ghost = !!v;
     else if (k === "x" || k === "y" || k === "w" || k === "h" || k === "z") next[k] = num(v, next[k]);
     else next[k] = String(v);
   }
@@ -148,6 +151,7 @@ async function importNotes(list) {
       x: num(note.x, 24), y: num(note.y, 24),
       w: num(note.w, 260), h: num(note.h, 200),
       collapsed: !!note.collapsed,
+      ghost: !!note.ghost,
       z: num(note.z, Date.now()),
       createdAt: num(note.createdAt, Date.now()),
       updatedAt: num(note.updatedAt, Date.now())

@@ -38,10 +38,11 @@ async function init() {
   $("addPage").addEventListener("click", () => add("page"));
   $("hide").addEventListener("click", toggleHide);
   $("q").addEventListener("input", render);
+  $("manage").addEventListener("click", () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL("manager.html") });
+    window.close();
+  });
   $("options").addEventListener("click", () => chrome.runtime.openOptionsPage());
-  $("export").addEventListener("click", exportNotes);
-  $("import").addEventListener("click", () => $("file").click());
-  $("file").addEventListener("change", importNotes);
 
   chrome.storage.onChanged.addListener(load);
   load();
@@ -181,7 +182,7 @@ function item(n, kind) {
   open.type = "button";
   open.className = "open";
   open.title =
-    kind === "here" ? "Jump to this note"
+    kind === "here" ? (n.ghost ? "Wake this note — it is click-through right now" : "Jump to this note")
       : kind === "away" ? "Open " + n.host
         : "Deleted " + when(n.deletedAt) + " — use Restore to bring it back";
 
@@ -202,7 +203,14 @@ function item(n, kind) {
   const tag = document.createElement("span");
   tag.className = "tag";
   tag.textContent = n.scope === "page" ? "page" : "site";
-  meta.append(tag, document.createTextNode(
+  meta.append(tag);
+  if (n.ghost) {
+    const ghost = document.createElement("span");
+    ghost.className = "tag";
+    ghost.textContent = "ghost";
+    meta.append(ghost);
+  }
+  meta.append(document.createTextNode(
     (n.scope === "page" ? pagePath(n) : n.host) + " · " +
     (kind === "trash" ? "deleted " + when(n.deletedAt) : when(n.updatedAt))
   ));
@@ -267,35 +275,4 @@ function when(ts) {
   const days = Math.round(hrs / 24);
   if (days < 30) return days + "d ago";
   return new Date(ts).toLocaleDateString();
-}
-
-/* ---------------------------------------------------------- backup/restore */
-
-function exportNotes() {
-  const payload = { sitenoted: 1, exportedAt: new Date().toISOString(), notes };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "sitenoted-" + new Date().toISOString().slice(0, 10) + ".json";
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-}
-
-function importNotes(e) {
-  const file = e.target.files?.[0];
-  e.target.value = "";
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async () => {
-    let incoming = null;
-    try {
-      const parsed = JSON.parse(String(reader.result));
-      incoming = Array.isArray(parsed) ? parsed : parsed?.notes;
-    } catch { /* handled below */ }
-    if (!Array.isArray(incoming)) return warn("That file isn't a Sitenoted export.");
-    const res = await chrome.runtime.sendMessage({ k: "import", notes: incoming });
-    warn(`Imported ${res?.count || 0} note${res?.count === 1 ? "" : "s"}.`);
-    load();
-  };
-  reader.readAsText(file);
 }
